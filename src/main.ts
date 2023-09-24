@@ -156,7 +156,12 @@ async function getAIResponse(prompt: string): Promise<Array<{
     return JSON.parse(res);
   } catch (error) {
     console.error("Error:", error);
-    return null;
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      console.error("Response headers:", error.response.headers);
+    }
+    throw error;
   }
 }
 
