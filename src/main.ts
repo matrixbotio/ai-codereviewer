@@ -141,28 +141,18 @@ async function getAIResponse(prompt: string): Promise<Array<{
     presence_penalty: 0,
   };
 
-  try {
-    const response = await openai.createChatCompletion({
+  const response = await openai.createChatCompletion({
       ...queryConfig,
       messages: [
-        {
-          role: "system",
-          content: prompt,
-        },
-      ],
-    });
+      {
+        role: "system",
+        content: prompt,
+      },
+    ],
+  });
 
-    const res = response.data.choices[0].message?.content?.trim() || "[]";
-    return JSON.parse(res);
-  } catch (error) {
-    console.error("Error:", error);
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-      console.error("Response status:", error.response.status);
-      console.error("Response headers:", error.response.headers);
-    }
-    throw error;
-  }
+  const res = response.data.choices[0].message?.content?.trim() || "[]";
+  return JSON.parse(res);
 }
 
 function createComment(
@@ -263,6 +253,14 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Error:", error);
+  console.error("Error message:", error.message);
+  console.error("Error stack:", error.stack);
+
+  if (error.response) {
+    console.error("Response data:", JSON.stringify(error.response.data));
+    console.error("Response status:", error.response.status);
+    console.error("Response headers:", error.response.headers);
+  }
+  
   process.exit(1);
 });
